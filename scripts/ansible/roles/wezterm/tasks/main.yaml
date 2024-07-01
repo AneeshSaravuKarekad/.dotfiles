@@ -4,21 +4,40 @@
   pacman:
     name: rustup
     state: present
-
 - name: Install Rust toolchain
   shell: rustup default stable
-
 - name: Clone Wezterm repository
   git:
     repo: https://github.com/wez/wezterm.git
     dest: "{{ lookup('env', 'HOME') }}/software/wezterm"
-
-- name: Build and install Wezterm
-  shell: |
-    cd {{ lookup('env', 'HOME') }}/software/wezterm
-    cargo build --release
-    sudo cp target/release/wezterm /usr/local/bin
+    clone: yes
+    depth: 1
+    recursive: yes
+- name: Ensure git submodules are updated
+  shell: git submodule update --init --recursive
   args:
     chdir: "{{ lookup('env', 'HOME') }}/software/wezterm"
+- name: Get Wezterm dependencies
+  shell: ./get-deps
+  args:
+    chdir: "{{ lookup('env', 'HOME') }}/software/wezterm"
+- name: Build Wezterm
+  shell: cargo build --release
+  args:
+    chdir: "{{ lookup('env', 'HOME') }}/software/wezterm"
+  async: 3600 # Maximum time to wait for the command to complete (in seconds)
+  poll: 10 # Interval (in seconds) to check the status
+  register: wezterm_build
+- name: Check Wezterm build status
+  async_status:
+    jid: "{{ wezterm_build.ansible_job_id }}"
+  register: job_result
+  until: job_result.finished
+  retries: 360 # Maximum number of retries
+  delay: 10 # Delay between retries (in seconds)
+- name: Install Wezterm
   become: yes
-  become_user: "{{ lookup('env', 'USER') }}"
+  copy:
+    src: "{{ lookup('env', 'HOME') }}/software/wezterm/target/release/wezterm"
+    dest: /usr/local/bin/wezterm
+    remote_src: yes

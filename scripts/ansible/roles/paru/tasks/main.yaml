@@ -6,17 +6,23 @@
     state: present
   with_items:
     - base-devel
-
 - name: Clone Paru repository
   git:
     repo: https://aur.archlinux.org/paru.git
     dest: "{{ lookup('env', 'HOME') }}/software/paru"
-
 - name: Build and install Paru
-  shell: |
-    cd {{ lookup('env', 'HOME') }}/software/paru
-    makepkg -si
-  args:
-    chdir: "{{ lookup('env', 'HOME') }}/software/paru"
   become: yes
   become_user: "{{ lookup('env', 'USER') }}"
+  shell: |
+    cd {{ lookup('env', 'HOME') }}/software/paru
+    makepkg -si --noconfirm
+  async: 3600 # Maximum time to wait for the command to complete (in seconds)
+  poll: 10 # Interval (in seconds) to check the status
+  register: paru_install
+- name: Check Paru installation status
+  async_status:
+    jid: "{{ paru_install.ansible_job_id }}"
+  register: job_result
+  until: job_result.finished
+  retries: 3600 # Maximum number of retries
+  delay: 10 # Delay between retries (in seconds)
