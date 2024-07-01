@@ -1,0 +1,35 @@
+# Ensure XDG Base Directory environment variables are set up
+- name: Setup XDG Base Directory Environment Variables
+  become: yes
+  lineinfile:
+    path: /etc/environment
+    line: "{{ item }}"
+    create: yes
+  with_items:
+    - "XDG_CONFIG_HOME=$HOME/.config"
+    - "XDG_CACHE_HOME=$HOME/.cache"
+    - "XDG_DATA_HOME=$HOME/.local/share"
+    - "XDG_STATE_HOME=$HOME/.local/state"
+  when: item not in lookup('file', '/etc/environment').split('\n')
+# Ensure necessary directories exist
+- name: Ensure XDG_CONFIG_HOME directory exists
+  file:
+    path: "{{ lookup('env', 'XDG_CONFIG_HOME') | default('$HOME/.config') }}"
+    state: directory
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "users"
+    mode: '0755'
+# Install xdg-user-dirs
+- name: Install xdg-user-dirs
+  become: yes
+  pacman:
+    name: xdg-user-dirs
+    state: present
+# Run xdg-user-dirs-update
+- name: Run xdg-user-dirs-update
+  command: xdg-user-dirs-update
+  environment:
+    XDG_CONFIG_HOME: "{{ lookup('env', 'XDG_CONFIG_HOME') | default('$HOME/.config') }}"
+    XDG_CACHE_HOME: "{{ lookup('env', 'XDG_CACHE_HOME') | default('$HOME/.cache') }}"
+    XDG_DATA_HOME: "{{ lookup('env', 'XDG_DATA_HOME') | default('$HOME/.local/share') }}"
+    XDG_STATE_HOME: "{{ lookup('env', 'XDG_STATE_HOME') | default('$HOME/.local/state') }}"

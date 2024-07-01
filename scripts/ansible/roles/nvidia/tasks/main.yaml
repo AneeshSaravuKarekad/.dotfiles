@@ -1,0 +1,44 @@
+# Install and configure NVidia for Hyprland
+- name: Install NVidia Dependencies
+  become: yes
+  pacman:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ nvidia_dependencies }}"
+- name: Backup mkinitcpio.conf
+  become: yes
+  copy:
+    src: /etc/mkinitcpio.conf
+    dest: /etc/mkinitcpio.conf.bak
+    owner: root
+    group: root
+    mode: '0644'
+- name: Gather current MODULES array from mkinitcpio.conf
+  shell: grep '^MODULES=' /etc/mkinitcpio.conf | cut -d'=' -f2
+  register: current_modules
+  become: yes
+- name: Ensure current_modules fact is a string
+  set_fact:
+    current_modules: "{{ current_modules.stdout | regex_replace('^\\((.*)\\)$', '\\1') | regex_replace(' ', ',') | regex_replace(',,', ',') }}"
+- name: Update mkinitcpio.conf to include NVIDIA modules
+  become: yes
+  template:
+    src: mkinitcpio_modules.conf.j2
+    dest: /etc/mkinitcpio.conf
+    mode: '0644'
+  vars:
+    current_modules: "{{ current_modules }}"
+- name: Create nvidia.conf in modprobe.d
+  become: yes
+  template:
+    src: nvidia.conf.j2
+    dest: /etc/modprobe.d/nvidia.conf
+- name: Rebuild initramfs
+  become: yes
+  command: mkinitcpio -P
+- name: Reboot the system to apply changes
+  become: yes
+  reboot:
+    msg: "Rebooting to apply NVIDIA driver configuration changes."
+    pre_reboot_delay: 5
+    post_reboot_delay: 30

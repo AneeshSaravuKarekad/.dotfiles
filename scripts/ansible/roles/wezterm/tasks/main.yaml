@@ -1,0 +1,24 @@
+# Install Wezterm from source
+- name: Install Wezterm dependencies
+  become: yes
+  pacman:
+    name: rustup
+    state: present
+
+- name: Install Rust toolchain
+  shell: rustup default stable
+
+- name: Clone Wezterm repository
+  git:
+    repo: https://github.com/wez/wezterm.git
+    dest: "{{ lookup('env', 'HOME') }}/software/wezterm"
+
+- name: Build and install Wezterm
+  shell: |
+    cd {{ lookup('env', 'HOME') }}/software/wezterm
+    cargo build --release
+    sudo cp target/release/wezterm /usr/local/bin
+  args:
+    chdir: "{{ lookup('env', 'HOME') }}/software/wezterm"
+  become: yes
+  become_user: "{{ lookup('env', 'USER') }}"

@@ -1,0 +1,9 @@
+- name: Setup Arch Linux Desktop Environment
+  hosts: localhost
+  roles:
+    - welcome_art
+    - xdg_base_dir
+    - paru
+    - wezterm
+    - desktop_environment
+    - nvidia

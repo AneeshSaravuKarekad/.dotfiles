@@ -1,0 +1,38 @@
+# Install Hyprland and desktop environment utilities
+- name: Install Hyprland dependencies
+  become: yes
+  pacman:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ hyprland_dependencies }}"
+
+- name: Clone Hyprland repository
+  git:
+    repo: https://github.com/hyprwm/Hyprland.git
+    dest: "{{ lookup('env', 'HOME') }}/software/hyprland"
+    clone: yes
+    recursive: yes
+
+- name: Build and install Hyprland
+  shell: |
+    cd {{ lookup('env', 'HOME') }}/software/hyprland
+    make all
+    sudo make install
+  args:
+    chdir: "{{ lookup('env', 'HOME') }}/software/hyprland"
+  become: yes
+  become_user: "{{ lookup('env', 'USER') }}"
+
+- name: Install Development Utilities
+  become: yes
+  pacman:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ development_environment }}"
+
+- name: Install Desktop Environment Utilities
+  become: yes
+  pacman:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ desktop_environment }}"
