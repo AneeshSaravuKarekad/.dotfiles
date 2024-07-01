@@ -40,6 +40,7 @@ development_environment:
   - bat
   - glow
   - openssh
+  - firefox
 desktop_environment:
   - dunst
   - pipewire
@@ -51,6 +52,11 @@ desktop_environment:
   - qt6-wayland
   - xdg-ninja
   - rofi-wayland
+  - ttf-jetbrains-mono-nerd
+  - ttf-liberation
+  - nofo-fonts
+  - noto-fonts-emoji
+  - noto-fonts-cjk
 nvidia_dependencies:
   - nvidia-dkms
   - nvidia-utils
