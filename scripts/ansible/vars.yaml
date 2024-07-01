@@ -31,8 +31,10 @@ hyprland_dependencies:
   - hyprwayland-scanner
   - xcb-util-errors
 development_environment:
-  - oh-my-posh
   - zoxide
+  - unzip
+  - wget
+  - curl
   - fzf
   - neovim
   - fastfetch
@@ -41,6 +43,8 @@ development_environment:
   - glow
   - openssh
   - firefox
+  - eza
+  - bitwarden
 desktop_environment:
   - dunst
   - pipewire

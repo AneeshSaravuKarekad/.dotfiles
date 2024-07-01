@@ -5,14 +5,12 @@
     name: "{{ item }}"
     state: present
   with_items: "{{ hyprland_dependencies }}"
-
 - name: Clone Hyprland repository
   git:
     repo: https://github.com/hyprwm/Hyprland.git
     dest: "{{ lookup('env', 'HOME') }}/software/hyprland"
     clone: yes
     recursive: yes
-
 - name: Build and install Hyprland
   shell: |
     cd {{ lookup('env', 'HOME') }}/software/hyprland
@@ -22,14 +20,17 @@
     chdir: "{{ lookup('env', 'HOME') }}/software/hyprland"
   become: yes
   become_user: "{{ lookup('env', 'USER') }}"
-
 - name: Install Development Utilities
   become: yes
   pacman:
     name: "{{ item }}"
     state: present
   with_items: "{{ development_environment }}"
-
+# TODO: Move oh-my-posh to vars
+- name: Install Oh My Posh using Paru
+  become: yes
+  command: paru -S --noconfirm oh-my-posh-bin
+  when: "'oh-my-posh-bin' not in installed_packages"
 - name: Install Desktop Environment Utilities
   become: yes
   pacman:
