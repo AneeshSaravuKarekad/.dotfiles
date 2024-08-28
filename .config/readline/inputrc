@@ -1,0 +1,35 @@
+# Faster tab-completion
+#
+# When performing tab completion, a single tab attempts to partially complete the
+# current word. If no partial completions are possible, a double tab shows all
+# possible completions.
+#
+# Change double-tab to single-tab
+
+# set show-all-if-unmodified on
+
+# Or single tab will perform both steps:
+# - partially complete the word
+# - show all possible completions if it is still ambiguous
+
+set show-all-if-ambiguous on
+
+# History Completion
+# Bind <Up> and <Down> arrow keys to search through Bash's history.
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+# Colorized completion
+
+# Color files by types
+# Note that this may cause completion text blink in some terminals (e.g. xterm).
+set colored-stats On
+# Append char to indicate type
+set visible-stats On
+# Mark symlinked directories
+set mark-symlinked-directories On
+# Color the common prefix
+set colored-completion-prefix On
+# Color the common prefix in menu-complete
+set menu-complete-display-prefix On
+
