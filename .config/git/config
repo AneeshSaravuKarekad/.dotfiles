@@ -1,0 +1,71 @@
+[user]
+	name = Aneesh SK
+	email = 158764340+AneeshSaravuKarekad@users.noreply.github.com  # GitHub noreply email for privacy
+
+[init]
+	defaultBranch = main  # Use 'main' as the default branch when initializing repos
+
+[alias]
+	lol = log --oneline --graph --all --pretty=format:'%C(magenta)%h %C(white) %an %ar%C(auto) %D%n%s%n'  # Pretty, one-line graph log
+
+[log]
+	abbrevCommit = true  # Abbreviated commit hashes in logs
+	graphColors = blue,yellow,cyan,magenta,green,red  # Custom colors for commit graph
+
+[color "decorate"]
+	HEAD = red
+	branch = blue
+	tag = yellow
+	remoteBranch = magenta  # Visual distinction for decorated refs
+
+[branch]
+	sort = -committerdate  # Sort branches by latest activity
+
+[tag]
+	sort = version:refname  # Sort tags semantically by version
+
+[diff]
+	algorithm = histogram  # Better diffing for moved blocks
+	colorMoved = plain  # Show moved lines in plain text
+	mnemonicPrefix = true  # Use mnemonic prefixes (a/, b/) in diffs
+	renames = true  # Detect and show renames
+
+[status]
+	branch = true  # Show current branch in status
+	showStash = true  # Show stash information
+	showUntrackedFiles = all  # Show all untracked files
+
+[push]
+	default = simple  # Push current branch to origin
+	autoSetupRemote = true  # Set upstream on first push
+	followTags = true  # Push annotated tags reachable from pushed commits
+
+[fetch]
+	prune = true  # Remove deleted branches/tags during fetch
+	pruneTags = true
+
+[commit]
+	verbose = true  # Show diff of changes to be committed
+
+[rerere]
+	enabled = true  # Enable reuse of recorded resolutions
+	autoupdate = true  # Auto-update reused resolutions
+
+[rebase]
+	autoSquash = true  # Auto-squash fixup!/squash! commits
+	autoStash = true  # Stash uncommitted changes before rebase
+	updateRefs = true  # Update tracking refs on successful rebase
+	missingCommitsCheck = warn  # Warn on missing commits before rebase
+
+[pull]
+	rebase = true  # Always rebase instead of merge on pull
+
+[url "git@github.com:zenithplans/"]
+	insteadOf = "zp:"  # Use 'zp:' as shorthand for pushing to zenithplans
+
+[url "git@github.com:aneeshsaravukarekad/"]
+	insteadOf = "aneesh:"  # Use 'aneesh:' as shorthand for personal repos
+
+[url "git@github.com:"]
+	insteadOf = "gh:"  # Use 'gh:' for generic GitHub access
+
