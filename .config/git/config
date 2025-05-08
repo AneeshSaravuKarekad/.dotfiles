@@ -69,3 +69,5 @@
 [url "git@github.com:"]
 	insteadOf = "gh:"  # Use 'gh:' for generic GitHub access
 
+[core]
+	editor = vim
